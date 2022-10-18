@@ -1,0 +1,164 @@
+
+
+<body>
+    
+    <div class="container">
+      <div class="section text-center">
+          
+          <div class="row">
+                <div class="col-md-12">
+                <div class="mt-4 col-11 col-sm-8 col-md-6 mx-auto" id="registerDiv">
+                    <div class="card card-nav-tabs text-center">
+                              <div class="card-header card-header-primary text-center mb-3">
+                                <h3 class="card-title">Neekat</h3>
+                                <h3 class="card-title">Account Registration</h3>
+                                
+                            </div>
+                            <p class="description text-center">Create your Neekat Account</p>
+                          <div class="card-body">
+                                <div class="row">
+
+                                    <div class="col-md-12 mr-auto">
+
+                                        <form class="form">
+                                            <div class="form-group bmd-form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">mail</i>
+                                                        </span>
+                                                    </div>
+                                                    <input id="reg_email" type="text" class="form-control" placeholder="Email..." required>
+
+                                                </div>
+                                            </div>
+                                            <div class="form-group bmd-form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">lock_outline</i>
+                                                        </span>
+                                                    </div>
+                                                    <input id="reg_password" type="password" placeholder="Password..." class="form-control" required>
+
+                                                </div>
+                                            </div>
+                                            <div class="form-group bmd-form-group">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">lock_outline</i>
+                                                        </span>
+                                                    </div>
+                                                    <input id="reg_re_password" type="password" placeholder="Re-enter Password..." class="form-control" required>
+                                                </div>
+                                            </div>
+<!--
+                                            <div class="form-check text-center">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="checkbox" value="" checked="">
+                                                    <span class="form-check-sign">
+                                                        <span class="check"></span>
+                                                    </span>
+                                                    I agree to the
+                                                    <a href="#something">terms and conditions</a>.
+                                                </label>
+                                            </div>
+-->
+                                            <div class="text-center">
+                                                <a id="register_btn" href="#" class="btn btn-primary btn-round">Register</a>
+                                                <img src="assets/img/loading.gif" style="height : 60px;" class="hidden" id="register_loading"> 
+                                            </div>
+                                        </form>
+
+                                        <h6 class="text-center"><a id="go_login_btn">Already have an Account? Login</a></h6>
+                                    </div>
+
+                                    <!--<div class="col-md-6 ml-auto">
+                                        <div class="info-horizontal pt-3">
+                                            <div class="icon icon-rose">
+                                                <i class="material-icons">timeline</i>
+                                            </div>
+                                            <div class="description">
+                                                <h4 class="info-title">Marketing</h4>
+                                                <p class="description">
+                                                    We've created the marketing campaign of the website.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="info-horizontal pt-3">
+                                            <div class="icon icon-primary">
+                                                <i class="material-icons">code</i>
+                                            </div>
+                                            <div class="description">
+                                                <h4 class="info-title">Fully Coded in HTML5</h4>
+                                                <p class="description">
+                                                    We've developed the website with HTML5 and CSS3.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="info-horizontal pt-3">
+                                            <div class="icon icon-info">
+                                                <i class="material-icons">group</i>
+                                            </div>
+                                            <div class="description">
+                                                <h4 class="info-title">Built Audience</h4>
+                                                <p class="description">
+                                                    There is also a Fully Customizable CMS Admin Dashboard for this product.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>-->
+
+                                </div>
+                            </div>
+
+                          <div class="card-footer m-auto">
+
+                               <!-- <h4 class="text-center"><a>All Copyright &copy; Reserved by Gossiping Team</a></h4>-->
+
+                          </div>
+                    
+                </div>
+               
+            </div>
+            
+                <div id="registerSuccessDiv" class="hidden">
+                    <div class="card">
+                            <div class="card-body ">
+                                <div class="icon icon-info">
+                                    <i class="material-icons">people</i>
+                                </div>
+                                <h3 class="card-title">
+                                    Your account has been created successfully !
+                                </h3>
+                                <p class="card-description">
+                                   Gossiping is a cloud-based instant messaging and voice over IP service developed by Team AI. Enjoy !
+                                </p>
+                                <!--<a id="go_to_login" class="btn btn-primary btn-round">Login</a>-->
+                                 <p class="card-description">
+                                   Please check your email to verify the account.
+                                </p>
+                            </div>
+                     </div>
+                </div>
+            </div>
+        
+        
+      </div>
+    </div>
+    </div>
+
+    
+</body>
+<script>
+    loadPageByJS("#go_login_btn", "pages/login.html");
+    loadPageByJS("#go_to_login", "pages/login.html");
+</script>
+
+    
+<script src="assets/js/user_register.js"></script>
+
+
+
+

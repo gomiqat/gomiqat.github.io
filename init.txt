@@ -1,0 +1,107 @@
+Going to create an app like skype
+
+1. Title = Gossiping
+2. db = firebase - google A/C
+3. technology = html, css, bs, js, jquery, nodejs 
+
+#----------table-------
+messages/a_ui
+    -user_from
+    -user_to
+    -text
+    -date
+    -day
+    -time
+    -file_url
+    -f_uid
+    
+    
+    
+
+-----to do list------
+1. search all users
+2. get searched user data (1)
+3. send friend request
+4. accept friend request
+5. reject friend request
+6. One to One Chat
+
+-------users table--------
+users/<user_uid>/{
+    --------user all data---------
+    <key>:<value>
+}
+
+-------friends table--------
+friends/<my_uid>/<friend_uid>/{
+    --------friend all data---------
+    <key>:<value>
+}
+
+
+Status Value :
+
+    0.Requested
+    2.Remove
+    
+    1.Confirm
+    3.Reject
+
+
+
+user:       styxthemasterofshadows
+Password:   styxishere
+
+user:       3zipfriends
+password:   3zip@friends
+
+=============================================
+            Query
+=============================================
+-----Add a new document with a generated id.-------
+var newCityRef = db.collection("cities").doc();
+
+-------later---------
+newCityRef.set(data);
+----------or---------
+db.collection("cities").doc().set(data);
+
+=============================================
+--------Add a new document with a generated id.-------------
+db.collection("cities").add({
+    name: "Tokyo",
+    country: "Japan"
+})
+.then(function(docRef) {
+    console.log("Document written with ID: ", docRef.id);
+})
+.catch(function(error) {
+    console.error("Error adding document: ", error);
+});
+================================================
+---------set user define id----------
+var docRef = db.collection('objects').doc('some-id');
+
+docRef.set(data);
+
+--------update data-------
+var updateTimestamp = docRef.update({
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+});
+==============================================
+
+messages/a_uid{
+    
+    to_uid:
+    
+}
+
+
+Problem to solve :
+
+1 - Double message fix
+4-  Add button on request
+5 - Login Status
+6 - Push Notification
+
+

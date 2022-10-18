@@ -1,0 +1,135 @@
+<body>
+<!--
+    <div id="content_loading">
+             <img src="assets/img/content_loading.gif" id="content_loading_gif">
+    </div>
+-->
+   <div class="main-container">
+       
+       
+       
+       
+       <div class="left-side">
+            <div class="left-inside-top">
+               <div class="current-user">
+<!--                    <img id="currentUserImg" class="current-user-image" src="assets/img/blank-profile.jpeg" alt="">-->
+                    <div class="current-user-info">
+                        <p id="currenUsersFullName" class="current-user-full-name"></p>
+                        <p class="current-user-status"><span id="currenUserStatus"></span> &nbsp; <span id="statusSignal" class="dot"></span>  Online</p>
+                    </div>
+               </div>
+                
+                <ul class="pagination pagination-primary pull-right top-left-btn-group">
+                    <li class="page-item">
+                        <a href="javascript:void(0);" class="page-link" id="user_notifications"><i class="material-icons">notifications</i>
+                         <span class="badge badge-pill badge-danger" id="notification_badge"></span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a href="javascript:void(0);" class="page-link" id="account_settings"><i class="material-icons">settings</i></a>
+                    </li>  
+                    <li class="page-item">
+                         <a href="javascript:void(0);" class="page-link logout-btn" ><i class="material-icons">power_settings_new</i></a>
+                        
+                      <!--    <button class=" btn btn-rose btn-just-icon btn-round logout-btn"><i class="material-icons">power_settings_new</i></button>-->
+                    </li>
+                    <!--<li class="page-item">
+                        <a href="javascript:void(0);" class="page-link">6<div class="ripple-container"></div></a>
+                    </li>-->
+
+                </ul>
+            </div>
+            <div class="form-group has-success bmd-form-group">
+                <div class="text-center">
+                    <a id="create_btn" href="#" class="btn btn-primary btn-round">Create Post</a>
+                    <a id="create_btn" href="#" class="btn btn-primary btn-round"><input type="file" accept="image/*" onchange="sendFile(event)" />Attach</a>
+                            
+          
+                    
+                </div>
+                                
+            </div>
+            
+<!--
+            <div class="left-inside-bottom">
+
+                  <ul class="channel-list">
+                      <li class="channel">A</li>       
+                      <li class="channel">A</li>       
+                      <li class="channel">A</li>       
+                      <li class="channel">A</li>       
+                      <li class="channel">A</li>       
+                      <li class="channel">A</li>       
+                   </ul>
+                
+                <ul class="search-list hidden">
+                </ul>
+           </div>
+-->
+       </div>
+       
+       
+ 
+       <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create a pen</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+        <label for="exampleFormControlTextarea1">Write here...</label>
+        <textarea class="form-control" id="post_msg" rows="5"></textarea>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button id="create_post_btn" type="button" class="btn btn-primary" data-dismiss="modal">Post</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+       
+       
+       
+       
+       <div class="right-side">
+           <div class="welcome-screen">
+               <button id="" class="btn btn-primary btn-link side-btn"><i class="material-icons">menu</i></button>
+                <div class="bottom">
+                    <h1 id="callbtn">Recent Posts</h1>
+                </div>
+           </div>
+           <div id="post_body" style="overflow:scroll; height:400px;"></div>
+
+            
+           
+           
+           
+       </div>
+   </div>
+</body>
+
+<script>
+    $(".side-btn, .left-inside-top, .friend-list, .search-list").bind("click", ".friend", function(){ 
+        $(".right-side").toggleClass("open");
+        $(".left-side").toggleClass("open");
+    })
+
+    $('#date').combodate({
+        minYear: 1975,
+        maxYear: 2018
+    }); 
+
+</script>
+<script src="assets/js/app.js"></script>
+<!--
+<script src="assets/js/profile.js"></script>
+<script src="assets/js/chat.js"></script>
+<script src="assets/js/channel.js"></script>
+<script src="assets/js/account.js"></script>
+<script src="assets/js/tags.js"></script>
+<script src="assets/js/webrtc.js"></script>-->
