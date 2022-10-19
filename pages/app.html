@@ -5,10 +5,6 @@
     </div>
 -->
    <div class="main-container">
-       
-       
-       
-       
        <div class="left-side">
             <div class="left-inside-top">
                <div class="current-user">
@@ -42,10 +38,6 @@
             <div class="form-group has-success bmd-form-group">
                 <div class="text-center">
                     <a id="create_btn" href="#" class="btn btn-primary btn-round">Create Post</a>
-                    <a id="create_btn" href="#" class="btn btn-primary btn-round"><input type="file" accept="image/*" onchange="sendFile(event)" />Attach</a>
-                            
-          
-                    
                 </div>
                                 
             </div>
@@ -70,7 +62,7 @@
        
        
  
-       <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -86,6 +78,7 @@
       </div>
       </div>
       <div class="modal-footer">
+        <a href="#" class="btn btn-primary btn-round"><input type="file" accept="image/*" onchange="attachFile(event)" /> <i class="material-icons">lock_outline</i></a> 
         <button id="create_post_btn" type="button" class="btn btn-primary" data-dismiss="modal">Post</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
@@ -103,7 +96,7 @@
                     <h1 id="callbtn">Recent Posts</h1>
                 </div>
            </div>
-           <div id="post_body" style="overflow:scroll; height:400px;"></div>
+           <div id="post_body" style="overflow:scroll; height:-webkit-fill-available;"></div>
 
             
            

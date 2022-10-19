@@ -1,6 +1,166 @@
 var currentUser = auth.currentUser;
+// auth.onAuthStateChanged(function(user) {
+//   if (user) {
+//     dbRef.ref('/users/' + user.uid).once('value').then(function(snapshot) {
+//       currentUser = snapshot.val();
+//     });
+//   }
+// }); 
+
 
 var password = 'test';
+///*--------firebase logout function-------------*/
+$(".logout-btn").on("click", function () {
+  //     usersRef.doc(currentUser.uid).update({
+  //            "is_active": "Offline"
+  //     });
+      auth.signOut().then(function () {
+          loadPage("login.html")
+      }).catch(function (error) {
+          // An error happened.
+      });
+      
+  });
+  $("#create_btn").on("click", function () {
+  
+      $('#myModal').modal('show');
+  });
+ 
+  /*-----start---------------get realtime messages data-----------------------------*/ 
+      var html = ""; 
+      var q = dbRef.collection('posts').orderBy("msgtime").where("uid", "==", currentUser.uid);
+       q.onSnapshot(function(snapshot) {
+          snapshot.docChanges().forEach(function(change) {
+                  
+              var doc = change.doc.data();
+                  var str = '[' + doc.name + '] ' + doc.time + ' ' + doc.date; 
+
+                  if (doc.fileurl != "") {
+                    var f;
+                    var post = '<div class="card">'
+                            +'<div class="card-body">'
+                              // +'<h5 class="card-title">'+ doc.name +'</h5>'
+                              +'<img src="'+doc.fileurl+'">'
+                            +'</div>'
+                            +'<div class="card-footer text-muted  text-center">'+str+'</div>'
+                          +'</div>';
+ 
+                        $("#post_body").prepend(post); 
+
+                  }else{
+                    var post = '<div class="card">'
+                    +'<div class="card-body">'
+                      // +'<h5 class="card-title">'+ doc.name +'</h5>'
+                      +'<p class="card-title">'+ doc.text +'</p>'
+                    +'</div>'
+                    +'<div class="card-footer text-muted  text-center">'+str+'</div>'
+                  +'</div>';      
+         $("#post_body").prepend(post); 
+                  }
+
+
+               
+          });
+           
+          // $("#post_body").animate({scrollTop: $("#post_body").prop("scrollHeight")}, 0); 
+      });
+      /*-----end---------------get realtime messages data-----------------------------*/     
+  var imgfile;
+  var imgURL = "";
+  var url = "";
+  var uploadTask;
+  var attachFile = function(event) {
+     imgfile = event.target.files[0];
+     uploadTask = storageRef.child('images/' + imgfile.name).put(imgfile);
+  
+  };
+  
+   function upload(){
+    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, 
+      function(snapshot) {
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        }, function(error) {
+                console.log(error);
+        }, function() {
+              uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                imgURL = downloadURL;
+                url = downloadURL;
+              });
+        });
+   }
+
+
+  $("#create_post_btn").on("click", function () {
+    var date = moment().format('LL');
+      var day = moment().format('dddd');
+      var time = moment().format('LT');
+      var timestamp = new Date();
+
+      if (uploadTask != null) {
+        upload();
+      }
+
+     var msgtime = Date.now();
+     var messageData = {
+             uid: currentUser.uid,
+             text: $("#post_msg").val(),
+             date: date,
+             day: day,
+             time: time,
+             fileurl: url,
+             msgtime: msgtime
+         }
+ 
+         dbRef.collection('posts').doc()
+             .set(messageData)
+             .then(function () {
+              $("#post_msg").val("");
+              url = '';
+              alert("Message Sent");
+
+             });
+ 
+ });
+   // Since you mentioned your images are in a folder,
+      // we'll create a Reference to that folder:
+  var storageRef1 = firebase.storage().ref("images/");
+  
+      // // Now we get the references of these images
+      // storageRef1.listAll().then(function(result) {
+      //   result.items.forEach(function(imageRef) {
+      //     // And finally display them
+      //     displayImage(imageRef);
+      //   });
+      // }).catch(function(error) {
+      //   // Handle any errors
+      // });
+  
+      function displayImage(imageRef) {
+        imageRef.getDownloadURL().then(function(url) {
+          // TODO: Display the image on the UI
+            console.log(url)
+        }).catch(function(error) {
+          // Handle any errors
+        });
+      }
+  
+  //
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* -------------- get currentUser and his/her friendlist and so ------------------ */
 
@@ -171,115 +331,18 @@ var password = 'test';
 //
 //
 //
-///*--------firebase logout function-------------*/
-$(".logout-btn").on("click", function () {
-//     usersRef.doc(currentUser.uid).update({
-//            "is_active": "Offline"
-//     });
-    auth.signOut().then(function () {
-        loadPage("login.html")
-    }).catch(function (error) {
-        // An error happened.
-    });
-    
-});
-$("#create_btn").on("click", function () {
-
-    $('#myModal').modal('show');
-});
-
-$("#create_post_btn").on("click", function () {
-   var date = moment().format('LL');
-     var day = moment().format('dddd');
-     var time = moment().format('LT');
-     var timestamp = new Date();
-       var fileurl = "";
-    var msgtime = Date.now();
-    var messageData = {
-            uid: currentUser.uid,
-            text: $("#post_msg").val(),
-            date: date,
-            day: day,
-            time: time,
-            fileurl: fileurl,
-            msgtime: msgtime
-        }
-
-        dbRef.collection('posts').doc()
-            .set(messageData)
-            .then(function () {
-                alert("Message Sent");
-
-            });
-
-});
-/*-----start---------------get realtime messages data-----------------------------*/ 
-    var html = ""; 
-    var q = dbRef.collection('posts').orderBy("msgtime").where("uid", "==", currentUser.uid);
-     q.onSnapshot(function(snapshot) {
-        snapshot.docChanges().forEach(function(change) {
-                
-            var doc = change.doc.data();
-                var str = '  ' + doc.time + ' ' + doc.date; 
-                var post = '<div class="card">'
-                          +'<div class="card-header text-center">'+doc.uid+'</div>'
-                          +'<div class="card-body">'
-                            +'<h5 class="card-title">'+ doc.day +'</h5>'
-                            +'<p class="card-text">'+ doc.text +'</p>'
-                            +'<a href="#" class="btn btn-primary">Go somewhere</a>'
-                          +'</div>'
-                          +'<div class="card-footer text-muted  text-center">'+str+'</div>'
-                        +'</div><br>';
-                        
-                        
-                        
-            $("#post_body").prepend(post); 
-        });
-         
-         $("#post_body").animate({scrollTop: $(".chat-screen .body").prop("scrollHeight")}, 0); 
-    });
-    /*-----end---------------get realtime messages data-----------------------------*/     
-     var imgfile;
-var imgURL = "";
 var sendFile = function(event) {
-   imgfile = event.target.files[0];
-   var uploadTask = storageRef.child('images/' + imgfile.name).put(imgfile);
-
-    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, 
-      function(snapshot) {
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        }, function(error) {
-                console.log(error);
-        }, function() {
-              uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                imgURL = downloadURL;
-                alert("done")
-              });
-        });
+  imgfile = event.target.files[0];
+  var uploadTask = storageRef.child('images/' + imgfile.name).put(imgfile);
+   uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, 
+     function(snapshot) {
+       var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+       }, function(error) {
+               console.log(error);
+       }, function() {
+             uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+               imgURL = downloadURL;
+               alert("done")
+             });
+       });
 };
-
-
- // Since you mentioned your images are in a folder,
-    // we'll create a Reference to that folder:
-var storageRef1 = firebase.storage().ref("images/");
-
-    // Now we get the references of these images
-    storageRef1.listAll().then(function(result) {
-      result.items.forEach(function(imageRef) {
-        // And finally display them
-        displayImage(imageRef);
-      });
-    }).catch(function(error) {
-      // Handle any errors
-    });
-
-    function displayImage(imageRef) {
-      imageRef.getDownloadURL().then(function(url) {
-        // TODO: Display the image on the UI
-          console.log(url)
-      }).catch(function(error) {
-        // Handle any errors
-      });
-    }
-
-//
