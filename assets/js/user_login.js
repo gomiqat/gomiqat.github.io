@@ -26,9 +26,8 @@ function doLogin() {
 docRef.get().then((doc) => {
     if (doc.exists) {
         var s = doc.data();
-        console.log("ok")
+       
         if($('#otp_password').val() == s.temp){
-           console.log("SSSSSSSSSSS") 
             
              auth.signInWithEmailAndPassword(loginInfo.email, loginInfo.password)
              .then(function (authData) {

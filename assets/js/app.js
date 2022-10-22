@@ -179,7 +179,41 @@ function sendChannelMsg() {
  $("#view_btn").on("click", function () {
   getRealTimePosts();
 });
+function getPosts(){
+    dbRef.collection('posts').orderBy("msgtime").where("privacy", "==", "2").get().then((querySnapshot) => {
+    querySnapshot.forEach((docs) => {
+        // doc.data() is never undefined for query doc snapshots
+                      var doc = docs.data();
+                  var str = '[' + doc.name + '] ' + doc.time + ' ' + doc.date; 
 
+                  if (doc.fileurl != "") {
+                    var f;
+                    var post = '<div class="card">'
+                            +'<div class="card-body">'
+                              // +'<h5 class="card-title">'+ doc.name +'</h5>'
+                               +'<p class="card-title">'+ doc.text +'</p>'
+                              +'<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
+                    +'<h6><span onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i>'+doc.total+'</span></h6>'  
+                            +'</div>'
+                            
+                            +'<div class="card-footer text-muted text-center">'+str+'</div>'
+                          +'</div>';
+ 
+                        $("#post_body").prepend(post); 
+
+                  }else{
+                    var post = '<div class="card">'
+                    +'<div class="card-body">'
+                      +'<p class="card-title">'+ doc.text +'</p>'
+                     +'<h6><span onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i> '+doc.total+'</span> </h6>' 
+                    +'</div>'
+                    +'<div class="card-footer text-muted text-center">'+str+'</div>'
+                  +'</div>';      
+         $("#post_body").prepend(post); 
+                  }
+    });
+});
+}
 
   /*-----start---------------get realtime messages data-----------------------------*/ 
     function getRealTimePosts(){
@@ -203,7 +237,7 @@ function sendChannelMsg() {
                               // +'<h5 class="card-title">'+ doc.name +'</h5>'
                                +'<p class="card-title">'+ doc.text +'</p>'
                               +'<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
-                    +'<h6><span onclick="hitLike(\''+doc.uid+'\')" id="'+doc.uid+'" style=""><i class="material-icons">favorite</i></span> '+doc.total+'</h6>'  
+                    +'<h6><span onclick="hitLike(\''+change.doc.id+'\')" id="'+change.doc.id+'" style=""><i class="material-icons">favorite</i>'+doc.total+'</span></h6>'  
                             +'</div>'
                             
                             +'<div class="card-footer text-muted text-center">'+str+'</div>'
@@ -214,26 +248,46 @@ function sendChannelMsg() {
                   }else{
                     var post = '<div class="card">'
                     +'<div class="card-body">'
-                       +'<h5 class="card-title"><span id="total"><i class="material-icons">volunteer_activism</i></span></h5>'
                       +'<p class="card-title">'+ doc.text +'</p>'
-                    
-                     +'<h6><span onclick="hitLike(\''+doc.uid+'\')" id="'+doc.uid+'" style=""><i class="material-icons">favorite</i></span>'+doc.total+' </h6>' 
+                     +'<h6><span onclick="hitLike(\''+change.doc.id+'\')" id="'+change.doc.id+'" style=""><i class="material-icons">favorite</i> '+doc.total+'</span> </h6>' 
                     +'</div>'
                     +'<div class="card-footer text-muted text-center">'+str+'</div>'
                   +'</div>';      
          $("#post_body").prepend(post); 
                   }
 
-
-               
           });
            
           // $("#post_body").animate({scrollTop: $("#post_body").prop("scrollHeight")}, 0); 
       });
     }
-    getRealTimePosts();
+    getPosts();
 function hitLike(elem){
     $("#"+elem).css("color", "red");
+    console.log($("#"+elem).text())
+    let text = $("#"+elem).text(); 
+let v = text.substr(text.length-1, 1);
+    
+let result = parseInt(v)+1;
+    console.log(result)
+    
+    postsRef.doc(elem)
+        .update({total : result})
+        .then(function() {
+        $("#"+elem).css("color", "red");
+            getPosts();
+
+        });
+    //callme(elem, result);
+}
+function callme(elem, result){
+        postsRef.doc(elem)
+        .update({total : result})
+        .then(function() {
+        $("#"+elem).css("color", "red");
+            getPosts();
+
+        });
 }
       /*-----end---------------get realtime messages data-----------------------------*/     
   var imgfile;
@@ -305,15 +359,10 @@ function hitLike(elem){
       var time = moment().format('LT');
       var timestamp = new Date();
       var msgtime = Date.now();
-      console.log("###0  " + uploadStatus);
       if (uploadStatus != 0 && $("#post_msg").val() != "") {
-        console.log("###1");
-        console.log("###1  " + uploadStatus);
         upload();
         console.log("if  " +url);
       }else if(uploadStatus == 0 && $("#post_msg").val() != ""){
-        console.log("###2");
-        console.log("###2  " + uploadStatus);
         var messageData = {
                 uid: currentUser.uid,
                 name: currentUser.name,
