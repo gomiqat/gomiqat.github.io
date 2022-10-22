@@ -37,7 +37,8 @@
             </div>
             <div class="form-group has-success bmd-form-group">
                 <div class="text-center">
-                    <a id="create_btn" href="#" class="btn btn-primary btn-round">Create Post</a>
+                    
+
                 </div>
                                 
             </div>
@@ -67,20 +68,40 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Create a pen</h5>
+        
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-        <label for="exampleFormControlTextarea1">Write here...</label>
         <textarea class="form-control" id="post_msg" rows="5"></textarea>
+        <div class="row">
+            <div class="col">
+                <a href="#" class="btn btn-primary btn-round" style="width: 178px;">
+                    <input type="file" accept="image/*" onchange="attachFile(event)" id="atteched_file"/>
+                    <i class="material-icons">upload</i>  Upload
+                    </a> 
+            </div>
+            <div class="col">
+                <div class="input-group input-group-static mb-4">
+                    <select class="form-control" id="privacy">
+                      <option value="1">Only Me</option>
+                      <option value="2">Me & You</option>
+                    </select>
+                  </div>
+            </div>
+          </div>
+        
+        
+            
       </div>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn btn-primary btn-round"><input type="file" accept="image/*" onchange="attachFile(event)" /> <i class="material-icons">lock_outline</i></a> 
+
+       
         <button id="create_post_btn" type="button" class="btn btn-primary" data-dismiss="modal">Post</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -92,16 +113,22 @@
        <div class="right-side">
            <div class="welcome-screen">
                <button id="" class="btn btn-primary btn-link side-btn"><i class="material-icons">menu</i></button>
-                <div class="bottom">
-                    <h1 id="callbtn">Recent Posts</h1>
+                <div class="bottom text-center">
+                    <a id="view_btn" href="#" class="btn btn-primary btn-round"><i class="material-icons">feed</i></a>
+                    <a id="create_btn" href="#" class="btn btn-primary btn-round"><i class="material-icons">create</i></a>
+                    <a id="manage_btn" href="#" class="btn btn-primary btn-round"><i class="material-icons">inventory</i></a>
+                    <a id="msg_btn" href="#" class="btn btn-primary btn-round"><i class="material-icons">sms</i></a>
                 </div>
            </div>
-           <div id="post_body" style="overflow:scroll; height:-webkit-fill-available;"></div>
-
-            
-           
-           
-           
+           <div id="post_body" style="overflow:scroll; height:inherit;"></div>
+           <div class="chat-screen hidden">
+            <div class="body" id="msgbody">
+            </div>
+            <div class="bottom">
+           <textarea name="" id="chat-box" cols="30" rows="10"></textarea>
+                <button id="send_btn" class=" btn btn-rose btn-just-icon btn-round send-btn" style="height:inherit;"><i class="material-icons">send</i></button>
+            </div>
+       </div>
        </div>
    </div>
 </body>

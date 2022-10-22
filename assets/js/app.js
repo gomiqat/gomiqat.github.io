@@ -1,11 +1,23 @@
 var currentUser = auth.currentUser;
-// auth.onAuthStateChanged(function(user) {
-//   if (user) {
-//     dbRef.ref('/users/' + user.uid).once('value').then(function(snapshot) {
-//       currentUser = snapshot.val();
-//     });
-//   }
-// }); 
+auth.onAuthStateChanged(function(user) {
+  if (user) {
+    dbRef.collection("users").where("uid", "==", currentUser.uid)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+            currentUser = doc.data();
+            $("#currenUsersFullName").text(currentUser.name);
+            //$("#currenUserStatus").text(currentUser.is_active);
+            //$("#currenUserStatus")
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+  }
+}); 
 
 
 var password = 'test';
@@ -21,14 +33,158 @@ $(".logout-btn").on("click", function () {
       });
       
   });
+  
+
   $("#create_btn").on("click", function () {
   
       $('#myModal').modal('show');
   });
- 
+  $("#msg_btn").on("click", function () {
+  
+    $("#post_body").hide(); 
+      $('.chat-screen').removeClass("hidden");
+
+  $(".chat-screen .body").html("");
+    var channelhtml = ""; 
+dbRef.collection('channelmessages').orderBy("msgtime").get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) { 
+            
+            var htmlContent = "";
+            if (doc.data().msg_by != currentUser.uid) {
+                channelhtml += '<div class="friend-chat">'
+                        +'<div class="selected-user-info">'
+                        + '<p id="">'
+                        +'<time class="chat-time" style="margin-top:-10px">'+doc.data().time+'</time></p>'
+                        +'<p class="selected-user-chat">'+doc.data().text+'</p></div>'
+                        +'</div>';
+            } else {
+                channelhtml += '<div class="my-chat">'
+                        +'<div class="selected-user-info">'
+                        + '<p class="text-right">'
+                        + '<time class="chat-time">'+doc.data().time+' </time> &nbsp;&nbsp;'
+                        +'<span class="selected-user-full-name"></span>'
+                        + '</p>'
+                        +'<p class="selected-user-chat text-right pull-right" style="margin-top:-10px">'+doc.data().text+'</p></div>'
+                        +'</div>';
+            }
+          
+        });
+         $(".chat-screen .body").html(channelhtml); 
+          $(".chat-screen .body").animate({scrollTop: $(".chat-screen .body").prop("scrollHeight")}, 1000);
+    });
+  
+
+});
+
+$("#send_btn").on("click", function () {
+  
+  sendChannelMsg();
+});
+function sendChannelMsg() {
+
+  var message = $('#chat-box').val();
+
+  var date = moment().format('LL');
+  var day = moment().format('dddd');
+  var time = moment().format('LT');
+  var fileurl = "";
+  var msgtime = Date.now();
+
+  var messageData = {
+      msg_by : currentUser.uid,
+      msg_by_name : $("#currenUsersFullName").text(),
+      //msg_by_img : $("#currentUserImg").attr("src"),
+      text: message,
+      date: date,
+      day: day,
+      time: time,
+      fileurl: fileurl,
+      msgtime: msgtime
+  }
+
+  dbRef.collection('channelmessages').doc()
+      .set(messageData)
+      .then(function () {
+
+      });
+
+
+
+  $('#chat-box').val("");
+
+
+  /*--start-------------print my send messages---------------------------------------*/
+  var  sendhtml =   '<div class="my-chat">'
+                  + '<div class="selected-user-info">'
+                  + '<p class="text-right">'
+                  + '<time class="chat-time">'+time+' </time> &nbsp;&nbsp;'
+                  + '</p>'
+                  + '<p class="selected-user-chat text-right pull-right">'+message+'</p></div>'
+                  + '</div>';
+
+  $(".chat-screen .body").append(sendhtml);
+   $(".chat-screen .body").animate({scrollTop: $(".chat-screen .body").prop("scrollHeight")}, 1000); 
+  /*-end----------------print my send messages---------------------------------------*/
+
+}
+  $("#manage_btn").on("click", function () {
+    $("#post_body").show(); 
+    var q = dbRef.collection('posts').orderBy("msgtime").where("uid", "==", currentUser.uid).where("deletestatus", "==", 0);
+     q.onSnapshot(function(snapshot) {
+        snapshot.docChanges().forEach(function(change) {
+                
+            var doc = change.doc.data();
+            console.log(change.doc.id)
+                var str = doc.time + ' ' + doc.date; 
+                $("#post_body").html(""); 
+                if (doc.fileurl != "") {
+                  var post = '<div class="card">'
+                          +'<div class="card-body">'
+                          +'<h5 class="card-title"  onclick="deletePost(\''+change.doc.id+'\')"><i class="material-icons"></i>Delete</h5>'
+                            +'<div class="">'+str+'</div>'
+                             +'<p class="card-title">'+ doc.text +'</p>'
+                            +'<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
+                          +'</div>'
+                          
+                        +'</div>';
+
+                      $("#post_body").prepend(post); 
+
+                }else{
+                  var post = '<div class="card">'
+                  +'<div class="card-body">'
+                  +'<h5 class="card-title"  onclick="deletePost(\''+change.doc.id+'\')"><i class="material-icons"></i>Delete</h5>'
+                   +'<div class="">'+str+' >delete</i></div>'
+                    +'<p class="card-title">'+ doc.text +'</p>'
+                  +'</div>'
+                 
+                +'</div>';      
+                $("#post_body").prepend(post); 
+               }
+        });
+         
+        // $("#post_body").animate({scrollTop: $("#post_body").prop("scrollHeight")}, 0); 
+    });
+    
+  });
+ function deletePost(uid){
+  postsRef.doc(uid).delete().then(() => {
+    alert("Document successfully deleted!");
+}).catch((error) => {
+    console.error("Error removing document: ", error);
+});
+
+ }
+ $("#view_btn").on("click", function () {
+  getRealTimePosts();
+});
   /*-----start---------------get realtime messages data-----------------------------*/ 
-      var html = ""; 
-      var q = dbRef.collection('posts').orderBy("msgtime").where("uid", "==", currentUser.uid);
+    function getRealTimePosts(){
+      $("#post_body").show(); 
+      var html = "";
+      $("#post_body").html("");
+      var q = dbRef.collection('posts').orderBy("msgtime").where("privacy", "==", "2");
+      //var q = dbRef.collection('posts').orderBy("msgtime").where("uid", "==", currentUser.uid);
        q.onSnapshot(function(snapshot) {
           snapshot.docChanges().forEach(function(change) {
                   
@@ -40,7 +196,8 @@ $(".logout-btn").on("click", function () {
                     var post = '<div class="card">'
                             +'<div class="card-body">'
                               // +'<h5 class="card-title">'+ doc.name +'</h5>'
-                              +'<img src="'+doc.fileurl+'">'
+                               +'<p class="card-title">'+ doc.text +'</p>'
+                              +'<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
                             +'</div>'
                             +'<div class="card-footer text-muted  text-center">'+str+'</div>'
                           +'</div>';
@@ -50,7 +207,7 @@ $(".logout-btn").on("click", function () {
                   }else{
                     var post = '<div class="card">'
                     +'<div class="card-body">'
-                      // +'<h5 class="card-title">'+ doc.name +'</h5>'
+                     //  +'<h5 class="card-title">'+ doc.name +'</h5>'
                       +'<p class="card-title">'+ doc.text +'</p>'
                     +'</div>'
                     +'<div class="card-footer text-muted  text-center">'+str+'</div>'
@@ -64,18 +221,23 @@ $(".logout-btn").on("click", function () {
            
           // $("#post_body").animate({scrollTop: $("#post_body").prop("scrollHeight")}, 0); 
       });
+    }
+    getRealTimePosts();
       /*-----end---------------get realtime messages data-----------------------------*/     
   var imgfile;
   var imgURL = "";
-  var url = "";
+  var url;
   var uploadTask;
+  var uploadStatus = 0;
   var attachFile = function(event) {
+    uploadStatus = 1;
+    console.log("uploadStatus str  " + uploadStatus);
      imgfile = event.target.files[0];
-     uploadTask = storageRef.child('images/' + imgfile.name).put(imgfile);
-  
   };
   
    function upload(){
+    console.log("uploadStatus " + uploadStatus);
+    uploadTask = storageRef.child('images/' + imgfile.name).put(imgfile);
     uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, 
       function(snapshot) {
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -85,8 +247,40 @@ $(".logout-btn").on("click", function () {
               uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
                 imgURL = downloadURL;
                 url = downloadURL;
+                console.log(url);
+                var date = moment().format('LL');
+                var day = moment().format('dddd');
+                var time = moment().format('LT');
+                var timestamp = new Date();
+                var msgtime = Date.now();
+                var messageData = {
+                  uid: currentUser.uid,
+                  name: currentUser.name,
+                  text: $("#post_msg").val(),
+                  date: date,
+                  day: day,
+                  time: time,
+                  fileurl: url,
+                  msgtime: msgtime,
+                  editstatus: 0,
+                  edittext : "",
+                  deletestatus: 0,
+                  editdate: "",
+                  editday: "",
+                  edittime: "",
+                  editmsgtime: "",
+                  privacy : $("#privacy :selected").val()
+              }
+              dbRef.collection('posts').doc()
+                  .set(messageData)
+                  .then(function () {
+                   $("#post_msg").val("");
+                   $("#atteched_file").val('');
+                   alert("Message Sent");
+             });
               });
         });
+        
    }
 
 
@@ -95,35 +289,51 @@ $(".logout-btn").on("click", function () {
       var day = moment().format('dddd');
       var time = moment().format('LT');
       var timestamp = new Date();
-
-      if (uploadTask != null) {
+      var msgtime = Date.now();
+      console.log("###0  " + uploadStatus);
+      if (uploadStatus != 0 && $("#post_msg").val() != "") {
+        console.log("###1");
+        console.log("###1  " + uploadStatus);
         upload();
+        console.log("if  " +url);
+      }else if(uploadStatus == 0 && $("#post_msg").val() != ""){
+        console.log("###2");
+        console.log("###2  " + uploadStatus);
+        var messageData = {
+                uid: currentUser.uid,
+                name: currentUser.name,
+                text: $("#post_msg").val(),
+                date: date,
+                day: day,
+                time: time,
+                fileurl: "",
+                msgtime: msgtime,
+                editstatus: 0,
+                edittext : "",
+                deletestatus: 0,
+                editdate: "",
+                editday: "",
+                edittime: "",
+                privacy : $("#privacy :selected").val(),
+                editmsgtime: ""
+            }
+            dbRef.collection('posts').doc()
+                .set(messageData)
+                .then(function () {
+                 $("#post_msg").val("");
+                 alert("Message Sent");
+           });
+      }else if(uploadStatus == 1 && $("#post_msg").val() == ""){
+        upload();
+        console.log("if  " +url);
       }
 
-     var msgtime = Date.now();
-     var messageData = {
-             uid: currentUser.uid,
-             text: $("#post_msg").val(),
-             date: date,
-             day: day,
-             time: time,
-             fileurl: url,
-             msgtime: msgtime
-         }
- 
-         dbRef.collection('posts').doc()
-             .set(messageData)
-             .then(function () {
-              $("#post_msg").val("");
-              url = '';
-              alert("Message Sent");
 
-             });
- 
+
  });
    // Since you mentioned your images are in a folder,
       // we'll create a Reference to that folder:
-  var storageRef1 = firebase.storage().ref("images/");
+  //var storageRef1 = firebase.storage().ref("images/");
   
       // // Now we get the references of these images
       // storageRef1.listAll().then(function(result) {
