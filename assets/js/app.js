@@ -203,7 +203,7 @@ function sendChannelMsg() {
                               // +'<h5 class="card-title">'+ doc.name +'</h5>'
                                +'<p class="card-title">'+ doc.text +'</p>'
                               +'<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
-                    +'<h6><span onclick="hitLike(\''+doc.uid+'\')" value="'+doc.total+'"><i  id="'+doc.uid+'" class="material-icons">favorite</i></span></h6>'  
+                    +'<h6><span onclick="hitLike(\''+doc.uid+'\')" id="'+doc.uid+'" style=""><i class="material-icons">favorite</i></span> '+doc.total+'</h6>'  
                             +'</div>'
                             
                             +'<div class="card-footer text-muted text-center">'+str+'</div>'
@@ -216,6 +216,8 @@ function sendChannelMsg() {
                     +'<div class="card-body">'
                        +'<h5 class="card-title"><span id="total"><i class="material-icons">volunteer_activism</i></span></h5>'
                       +'<p class="card-title">'+ doc.text +'</p>'
+                    
+                     +'<h6><span onclick="hitLike(\''+doc.uid+'\')" id="'+doc.uid+'" style=""><i class="material-icons">favorite</i></span>'+doc.total+' </h6>' 
                     +'</div>'
                     +'<div class="card-footer text-muted text-center">'+str+'</div>'
                   +'</div>';      
@@ -232,8 +234,6 @@ function sendChannelMsg() {
     getRealTimePosts();
 function hitLike(elem){
     $("#"+elem).css("color", "red");
-    var count = $("#"+elem).val();
-    console.log(count)
 }
       /*-----end---------------get realtime messages data-----------------------------*/     
   var imgfile;
