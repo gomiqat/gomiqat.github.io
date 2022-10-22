@@ -170,7 +170,7 @@ function sendChannelMsg() {
   });
  function deletePost(uid){
   postsRef.doc(uid).delete().then(() => {
-    alert("Document successfully deleted!");
+    alert("Post successfully deleted!");
 }).catch((error) => {
     console.error("Error removing document: ", error);
 });
@@ -291,7 +291,7 @@ function hitLike(elem){
                   .then(function () {
                    $("#post_msg").val("");
                    $("#atteched_file").val('');
-                   alert("Message Sent");
+                   alert("Miqat posted!");
              });
               });
         });
@@ -339,7 +339,7 @@ function hitLike(elem){
                 .set(messageData)
                 .then(function () {
                  $("#post_msg").val("");
-                 alert("Message Sent");
+                  alert("Miqat posted!");
            });
       }else if(uploadStatus == 1 && $("#post_msg").val() == ""){
         upload();
