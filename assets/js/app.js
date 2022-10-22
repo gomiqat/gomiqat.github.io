@@ -42,7 +42,7 @@ $(".logout-btn").on("click", function () {
   $("#msg_btn").on("click", function () {
   
     $("#post_body").hide(); 
-      $('.chat-screen').removeClass("hidden");
+    $('.chat-screen').removeClass("hidden"); 
 
   $(".chat-screen .body").html("");
     var channelhtml = ""; 
@@ -128,6 +128,7 @@ function sendChannelMsg() {
 
 }
   $("#manage_btn").on("click", function () {
+    $('.chat-screen').addClass("hidden");
     $("#post_body").show(); 
     var q = dbRef.collection('posts').orderBy("msgtime").where("uid", "==", currentUser.uid).where("deletestatus", "==", 0);
      q.onSnapshot(function(snapshot) {
@@ -140,7 +141,7 @@ function sendChannelMsg() {
                 if (doc.fileurl != "") {
                   var post = '<div class="card">'
                           +'<div class="card-body">'
-                          +'<h5 class="card-title"  onclick="deletePost(\''+change.doc.id+'\')"><i class="material-icons"></i>Delete</h5>'
+                          +'<h5 class="card-title"  onclick="deletePost(\''+change.doc.id+'\')"><i class="material-icons">delete</i></h5>'
                             +'<div class="">'+str+'</div>'
                              +'<p class="card-title">'+ doc.text +'</p>'
                             +'<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
@@ -153,8 +154,8 @@ function sendChannelMsg() {
                 }else{
                   var post = '<div class="card">'
                   +'<div class="card-body">'
-                  +'<h5 class="card-title"  onclick="deletePost(\''+change.doc.id+'\')"><i class="material-icons"></i>Delete</h5>'
-                   +'<div class="">'+str+' >delete</i></div>'
+                  +'<h5 class="card-title" onclick="deletePost(\''+change.doc.id+'\')"><i class="material-icons">delete</i></h5>'
+                   +'<div class="">'+str+'</div>'
                     +'<p class="card-title">'+ doc.text +'</p>'
                   +'</div>'
                  
@@ -180,7 +181,9 @@ function sendChannelMsg() {
 });
   /*-----start---------------get realtime messages data-----------------------------*/ 
     function getRealTimePosts(){
+      $('.chat-screen').addClass("hidden");
       $("#post_body").show(); 
+      
       var html = "";
       $("#post_body").html("");
       var q = dbRef.collection('posts').orderBy("msgtime").where("privacy", "==", "2");
@@ -210,7 +213,7 @@ function sendChannelMsg() {
                      //  +'<h5 class="card-title">'+ doc.name +'</h5>'
                       +'<p class="card-title">'+ doc.text +'</p>'
                     +'</div>'
-                    +'<div class="card-footer text-muted  text-center">'+str+'</div>'
+                    +'<div class="card-footer text-muted text-center">'+str+'</div>'
                   +'</div>';      
          $("#post_body").prepend(post); 
                   }
