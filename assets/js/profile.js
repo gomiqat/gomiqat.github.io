@@ -39,9 +39,8 @@ if(file == ""){
   usersRef.doc(currentUser.uid)
         .update(profileData)
         .then(function() {
-            $("#currenUserStatus").text(profileData.mood);   
-            imageUpload(file);
-         });
+            
+  });
      
 })
 

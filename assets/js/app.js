@@ -179,6 +179,8 @@ function sendChannelMsg() {
  $("#view_btn").on("click", function () {
   getRealTimePosts();
 });
+
+
   /*-----start---------------get realtime messages data-----------------------------*/ 
     function getRealTimePosts(){
       $('.chat-screen').addClass("hidden");
@@ -201,8 +203,10 @@ function sendChannelMsg() {
                               // +'<h5 class="card-title">'+ doc.name +'</h5>'
                                +'<p class="card-title">'+ doc.text +'</p>'
                               +'<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
+                    +'<h6><span onclick="hitLike(\''+doc.uid+'\')" value="'+doc.total+'"><i  id="'+doc.uid+'" class="material-icons">favorite</i></span></h6>'  
                             +'</div>'
-                            +'<div class="card-footer text-muted  text-center">'+str+'</div>'
+                            
+                            +'<div class="card-footer text-muted text-center">'+str+'</div>'
                           +'</div>';
  
                         $("#post_body").prepend(post); 
@@ -210,7 +214,7 @@ function sendChannelMsg() {
                   }else{
                     var post = '<div class="card">'
                     +'<div class="card-body">'
-                     //  +'<h5 class="card-title">'+ doc.name +'</h5>'
+                       +'<h5 class="card-title"><span id="total"><i class="material-icons">volunteer_activism</i></span></h5>'
                       +'<p class="card-title">'+ doc.text +'</p>'
                     +'</div>'
                     +'<div class="card-footer text-muted text-center">'+str+'</div>'
@@ -226,6 +230,11 @@ function sendChannelMsg() {
       });
     }
     getRealTimePosts();
+function hitLike(elem){
+    $("#"+elem).css("color", "red");
+    var count = $("#"+elem).val();
+    console.log(count)
+}
       /*-----end---------------get realtime messages data-----------------------------*/     
   var imgfile;
   var imgURL = "";
@@ -272,6 +281,9 @@ function sendChannelMsg() {
                   editday: "",
                   edittime: "",
                   editmsgtime: "",
+                  slike: 0,
+                  mlike: 0,
+                  total: 0,
                   privacy : $("#privacy :selected").val()
               }
               dbRef.collection('posts').doc()
@@ -317,6 +329,9 @@ function sendChannelMsg() {
                 editdate: "",
                 editday: "",
                 edittime: "",
+                 slike: 0,
+                  mlike: 0,
+                  total: 0,
                 privacy : $("#privacy :selected").val(),
                 editmsgtime: ""
             }
