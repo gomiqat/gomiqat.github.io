@@ -200,13 +200,13 @@ function getPosts(){
 
                                if (doc.fileurl != "") {
                               post += '<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
-                                    +'<h6><span onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i>'+doc.total+'</span> <span class="card-footer" onclick="showReply(\''+docs.id+'\')"><i class="material-icons" style="color : blue;">reply</i></span></h6>'; 
+                                    +'<div style="display : flex"><h6 onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i>'+doc.total+'</h6> <span class="card-footer" onclick="showReply(\''+docs.id+'\')"><i class="material-icons" style="color : blue;">quickreply</i></span></div>'; 
                                }else{
-                              post +='<h6><span onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i> '+doc.total+'</span><span class="card-footer" onclick="showReply(\''+docs.id+'\')"><i class="material-icons" style="color : blue;">reply</i></span> </h6>'; 
+                              post +='<div style="display : flex"><h6 onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i> '+doc.total+'</h6><span class="card-footer" onclick="showReply(\''+docs.id+'\')"><i class="material-icons" style="color : blue;">quickreply</i></span> </div>'; 
                     
                                }
                                post += '</div>'
-                             +'<div class="hidden card-footer '+docs.id+'"><textarea class=" chat-box" cols="20" rows="10"></textarea><button onclick="sendReply(\''+docs.id+'\')" id="send_reply_btn" class=" btn btn-rose btn-just-icon btn-round send-btn"><i class="material-icons">send</i></button></div>'
+                             +'<div class="hidden card-footer '+docs.id+'"><textarea class=" chat-box" cols="20" rows="10"></textarea><button onclick="sendReply(\''+docs.id+'\')" id="send_reply_btn" class=" btn btn-rose btn-just-icon btn-round"><i class="material-icons">send</i></button></div>'
                              +'<div class="card-footer text-muted text-center">'+str+'</div>'
                           +'</div>';
  
@@ -217,8 +217,7 @@ function getPosts(){
 
 }
 function sendReply(param){
-  var a =$('.' + param + ' textarea').val();
-  console.log(a)
+  var txt =$('.' + param + ' textarea').val();
   var date = moment().format('LL');
   var day = moment().format('dddd');
   var time = moment().format('LT');
@@ -227,7 +226,7 @@ function sendReply(param){
   var messageData = {
     uid: currentUser.uid,
     name: currentUser.name,
-    reply: a,
+    reply: txt,
     date: date,
     day: day,
     time: time,
@@ -246,15 +245,19 @@ function sendReply(param){
     privacy : 0,
     postid : param
 }
+       var str =  messageData.date + ' ' +messageData.time + ' <b>' + messageData.name + ' : </b>'; 
+     $('.' + param + 'rep').append("<p class='"+param+"rep' >"+str + txt+"</p>");
 dbRef.collection('replys').doc()
     .set(messageData)
     .then(function () {
       $('.' + param + ' textarea').val('');
+
       $('.' + param).addClass("hidden");
 });
 }
 function showReply(param){
   $('.' + param).removeClass("hidden"); 
+    $('.' + param + 'rep').remove();
         dbRef.collection("replys").where("postid", "==", param)
                                 .get()
                                 .then((querySnapshot) => {
@@ -263,8 +266,9 @@ function showReply(param){
                                             var rep = d.data();
                                          // $("."+docs.id + " p").append(docs.reply);   
                                         // post +='<p class="card-text">'+ d.reply +'</p>';
+                                            
                                             var str =  rep.date + ' ' +rep.time + ' <b>' + rep.name + ' : </b>'; 
-                                           $('.' + param).before("<p style='margin-left: 35px;'>"+str + rep.reply+"</p>");
+                                           $('.' + param).before("<p class='"+param+"rep' style='margin-left: 35px;'>"+str + rep.reply+"</p>");
                                         }else{
 
                                         
