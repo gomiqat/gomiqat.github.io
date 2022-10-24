@@ -179,6 +179,9 @@ function sendChannelMsg() {
  $("#view_btn").on("click", function () {
   getRealTimePosts();
 });
+function get(id){
+
+}
 function getPosts(){
     dbRef.collection('posts').orderBy("msgtime").where("privacy", "==", "2").get().then((querySnapshot) => {
     querySnapshot.forEach((docs) => {
@@ -186,35 +189,92 @@ function getPosts(){
                       var doc = docs.data();
                   var str = '[' + doc.name + '] ' + doc.time + ' ' + doc.date; 
 
-                  if (doc.fileurl != "") {
+            
                     var f;
                     var post = '<div class="card">'
                             +'<div class="card-body">'
                               // +'<h5 class="card-title">'+ doc.name +'</h5>'
-                               +'<p class="card-title">'+ doc.text +'</p>'
-                              +'<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
-                    +'<h6><span onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i>'+doc.total+'</span></h6>'  
-                            +'</div>'
-                            
-                            +'<div class="card-footer text-muted text-center">'+str+'</div>'
+                               +'<p class="card-title">'+ doc.text +'</p>';
+
+
+
+                               if (doc.fileurl != "") {
+                              post += '<img class="img-fluid" alt="image" style="width: 225px;" src="'+doc.fileurl+'">'
+                                    +'<h6><span onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i>'+doc.total+'</span> <span class="card-footer" onclick="showReply(\''+docs.id+'\')"><i class="material-icons" style="color : blue;">reply</i></span></h6>'; 
+                               }else{
+                              post +='<h6><span onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i> '+doc.total+'</span><span class="card-footer" onclick="showReply(\''+docs.id+'\')"><i class="material-icons" style="color : blue;">reply</i></span> </h6>'; 
+                    
+                               }
+                               post += '</div>'
+                             +'<div class="hidden card-footer '+docs.id+'"><textarea class=" chat-box" cols="20" rows="10"></textarea><button onclick="sendReply(\''+docs.id+'\')" id="send_reply_btn" class=" btn btn-rose btn-just-icon btn-round send-btn"><i class="material-icons">send</i></button></div>'
+                             +'<div class="card-footer text-muted text-center">'+str+'</div>'
                           +'</div>';
  
                         $("#post_body").prepend(post); 
 
-                  }else{
-                    var post = '<div class="card">'
-                    +'<div class="card-body">'
-                      +'<p class="card-title">'+ doc.text +'</p>'
-                     +'<h6><span onclick="hitLike(\''+docs.id+'\')" id="'+docs.id+'" style=""><i class="material-icons">favorite</i> '+doc.total+'</span> </h6>' 
-                    +'</div>'
-                    +'<div class="card-footer text-muted text-center">'+str+'</div>'
-                  +'</div>';      
-         $("#post_body").prepend(post); 
-                  }
     });
 });
-}
 
+}
+function sendReply(param){
+  var a =$('.' + param + ' textarea').val();
+  console.log(a)
+  var date = moment().format('LL');
+  var day = moment().format('dddd');
+  var time = moment().format('LT');
+  var timestamp = new Date();
+  var msgtime = Date.now();
+  var messageData = {
+    uid: currentUser.uid,
+    name: currentUser.name,
+    reply: a,
+    date: date,
+    day: day,
+    time: time,
+    fileurl: '',
+    msgtime: msgtime,
+    editstatus: 0,
+    edittext : "",
+    deletestatus: 0,
+    editdate: "",
+    editday: "",
+    edittime: "",
+    editmsgtime: "",
+    slike: 0,
+    mlike: 0,
+    total: 0,
+    privacy : 0,
+    postid : param
+}
+dbRef.collection('replys').doc()
+    .set(messageData)
+    .then(function () {
+      $('.' + param + ' textarea').val('');
+      $('.' + param).addClass("hidden");
+});
+}
+function showReply(param){
+  $('.' + param).removeClass("hidden"); 
+        dbRef.collection("replys").where("postid", "==", param)
+                                .get()
+                                .then((querySnapshot) => {
+                                    querySnapshot.forEach((d) => {
+                                        if(d.exists){
+                                            var rep = d.data();
+                                         // $("."+docs.id + " p").append(docs.reply);   
+                                        // post +='<p class="card-text">'+ d.reply +'</p>';
+                                            var str =  rep.date + ' ' +rep.time + ' <b>' + rep.name + ' : </b>'; 
+                                           $('.' + param).before("<p style='margin-left: 35px;'>"+str + rep.reply+"</p>");
+                                        }else{
+
+                                        
+                                        }
+                                })
+                               })
+                                .catch((error) => {
+                                    console.log("Error getting documents: ", error);
+                                })
+}
   /*-----start---------------get realtime messages data-----------------------------*/ 
     function getRealTimePosts(){
       $('.chat-screen').addClass("hidden");

@@ -77,7 +77,16 @@
         border-right: none;
         height: 50px !important;
         width: 100%;
-        font-size: 13px;
+        font-size: 16px;
+    }
+    .chat-box{
+        resize: none;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        height: 50px !important;
+        width: 100%;
+        font-size: 16px;
     }
     .send-btn{
         position: absolute !important;
