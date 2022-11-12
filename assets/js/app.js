@@ -130,7 +130,8 @@ function sendChannelMsg() {
   $("#manage_btn").on("click", function () {
     $('.chat-screen').addClass("hidden");
     $("#post_body").show(); 
-    var q = dbRef.collection('posts').orderBy("msgtime").where("uid", "==", currentUser.uid).where("deletestatus", "==", 0);
+      var ht = "";
+    var q = dbRef.collection('posts').orderBy("msgtime", "desc").where("uid", "==", currentUser.uid).where("deletestatus", "==", 0);
      q.onSnapshot(function(snapshot) {
         snapshot.docChanges().forEach(function(change) {
                 
@@ -148,8 +149,8 @@ function sendChannelMsg() {
                           +'</div>'
                           
                         +'</div>';
-
-                      $("#post_body").prepend(post); 
+                    
+                      ht += post;
 
                 }else{
                   var post = '<div class="card">'
@@ -160,11 +161,12 @@ function sendChannelMsg() {
                   +'</div>'
                  
                 +'</div>';      
-                $("#post_body").prepend(post); 
+                ht += post; 
                }
         });
+         $("#post_body").append(ht);
          
-        // $("#post_body").animate({scrollTop: $("#post_body").prop("scrollHeight")}, 0); 
+         //$("#post_body").animate({scrollTop: $("#post_body").prop("scrollHeight")}, 0); 
     });
     
   });
