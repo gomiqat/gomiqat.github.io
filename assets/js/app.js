@@ -6,15 +6,52 @@ auth.onAuthStateChanged(function(user) {
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
             currentUser = doc.data();
             $("#currenUsersFullName").text(currentUser.name);
             //$("#currenUserStatus").text(currentUser.is_active);
             //$("#currenUserStatus")
+            
+              var date = moment().format('LL');
+              var day = moment().format('dddd');
+              var time = moment().format('LT');
+              var msgtime = Date.now();
+            $.getJSON('http://ip-api.com/json', function(data) {
+                dbRef.collection('audits').doc()
+                  .set({
+                      type : "Main Page",
+                      date: date,
+                      day: day,
+                      time: time,
+                      logtime: msgtime,
+                      useruid : currentUser.uid,
+                      username : currentUser.name,
+                      status: data.status,
+                      country: data.country,
+                      countryCode: data.countryCode,
+                      region: data.region,
+                      regionName: data.regionName,
+                      city: data.city,
+                      zip: data.zip,
+                      lat: data.lat,
+                      lon: data.lon,
+                      timezone: data.timezone,
+                      isp: data.isp,
+                      org: data.org,
+                      as: data.as,
+                      query: data.query
+                    
+                    })
+                  .then(function () {
+
+                  });
+            });
+            
+            
+            
+            
         });
     })
     .catch((error) => {
-        console.log("Error getting documents: ", error);
     });
   }
 }); 
@@ -23,14 +60,46 @@ auth.onAuthStateChanged(function(user) {
 var password = 'test';
 ///*--------firebase logout function-------------*/
 $(".logout-btn").on("click", function () {
-  //     usersRef.doc(currentUser.uid).update({
-  //            "is_active": "Offline"
-  //     });
-      auth.signOut().then(function () {
-          loadPage("login.html")
-      }).catch(function (error) {
-          // An error happened.
-      });
+     var date = moment().format('LL');
+              var day = moment().format('dddd');
+              var time = moment().format('LT');
+              var msgtime = Date.now();
+            $.getJSON('http://ip-api.com/json', function(data) {
+                dbRef.collection('audits').doc()
+                  .set({
+                      type : "Logout",
+                      date: date,
+                      day: day,
+                      time: time,
+                      logtime: msgtime,
+                      useruid : currentUser.uid,
+                      username : currentUser.name,
+                      status: data.status,
+                      country: data.country,
+                      countryCode: data.countryCode,
+                      region: data.region,
+                      regionName: data.regionName,
+                      city: data.city,
+                      zip: data.zip,
+                      lat: data.lat,
+                      lon: data.lon,
+                      timezone: data.timezone,
+                      isp: data.isp,
+                      org: data.org,
+                      as: data.as,
+                      query: data.query
+                    
+                    })
+                  .then(function () {
+                        auth.signOut().then(function () {
+                                  loadPage("login.html")
+                              }).catch(function (error) {
+                              });
+                  });
+            });
+            
+            
+      
       
   });
   
@@ -102,7 +171,7 @@ function sendChannelMsg() {
       msgtime: msgtime
   }
 
-  dbRef.collection('channelmessages').doc()
+     dbRef.collection('channelmessages').doc()
       .set(messageData)
       .then(function () {
 

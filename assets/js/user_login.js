@@ -1,4 +1,43 @@
 /*--------firebase login function-------------*/
+
+            var date = moment().format('LL');
+              var day = moment().format('dddd');
+              var time = moment().format('LT');
+              var msgtime = Date.now();
+            $.getJSON('http://ip-api.com/json', function(data) {
+                dbRef.collection('audits').doc()
+                  .set({
+                      type : "Login Page",
+                      date: date,
+                      day: day,
+                      time: time,
+                      logtime: msgtime,
+                      useruid : "Anonymous",
+                      username : "Anonymous",
+                      status: data.status,
+                      country: data.country,
+                      countryCode: data.countryCode,
+                      region: data.region,
+                      regionName: data.regionName,
+                      city: data.city,
+                      zip: data.zip,
+                      lat: data.lat,
+                      lon: data.lon,
+                      timezone: data.timezone,
+                      isp: data.isp,
+                      org: data.org,
+                      as: data.as,
+                      query: data.query
+                    
+                    })
+                  .then(function () {
+                        
+                  });
+            });
+            
+            
+
+
 $('#login_password').keypress(function (e) {
     if (e.keyCode == 13) {
         doLogin();
@@ -31,7 +70,41 @@ docRef.get().then((doc) => {
             
              auth.signInWithEmailAndPassword(loginInfo.email, loginInfo.password)
              .then(function (authData) {
-                
+               var date = moment().format('LL');
+              var day = moment().format('dddd');
+              var time = moment().format('LT');
+              var msgtime = Date.now();
+            $.getJSON('http://ip-api.com/json', function(data) {
+                dbRef.collection('audits').doc()
+                  .set({
+                      type : "Login Attempt",
+                      date: date,
+                      day: day,
+                      time: time,
+                      logtime: msgtime,
+                      useruid : currentUser.uid,
+                      username : loginInfo.email,
+                      status: data.status,
+                      country: data.country,
+                      countryCode: data.countryCode,
+                      region: data.region,
+                      regionName: data.regionName,
+                      city: data.city,
+                      zip: data.zip,
+                      lat: data.lat,
+                      lon: data.lon,
+                      timezone: data.timezone,
+                      isp: data.isp,
+                      org: data.org,
+                      as: data.as,
+                      query: data.query
+                    
+                    })
+                  .then(function () {
+
+                  });
+            });  
+                 
              loadPage("pages/otp.html");
    
                
@@ -74,18 +147,49 @@ var docRef = dbRef.collection('otp').doc("CODE");
 docRef.get().then((doc) => {
     if (doc.exists) {
         var s = doc.data();
-        console.log("ok")
         if($('#otp_password').val() == s.temp){
-            loadPage("pages/app.html");
+             var date = moment().format('LL');
+              var day = moment().format('dddd');
+              var time = moment().format('LT');
+              var msgtime = Date.now();
+            $.getJSON('http://ip-api.com/json', function(data) {
+                dbRef.collection('audits').doc()
+                  .set({
+                      type : "Successful Login",
+                      date: date,
+                      day: day,
+                      time: time,
+                      logtime: msgtime,
+                      useruid : currentUser.uid,
+                      username : currentUser.name,
+                      status: data.status,
+                      country: data.country,
+                      countryCode: data.countryCode,
+                      region: data.region,
+                      regionName: data.regionName,
+                      city: data.city,
+                      zip: data.zip,
+                      lat: data.lat,
+                      lon: data.lon,
+                      timezone: data.timezone,
+                      isp: data.isp,
+                      org: data.org,
+                      as: data.as,
+                      query: data.query
+                    
+                    })
+                  .then(function () {
+                    loadPage("pages/app.html");
+                  });
+            });
+            
         }
         
         
     } else {
         // doc.data() will be undefined in this case
-        console.log("No such document!");
     }
 }).catch((error) => {
-    console.log("Error getting document:", error);
 });
     
     

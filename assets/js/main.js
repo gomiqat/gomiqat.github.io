@@ -18,18 +18,6 @@ auth.onAuthStateChanged(function (userdata) {
         loadPage("pages/login.html");
     }
 });
-/*--------firebase logout function-------------*/
-$(".logout-btn").on("click", function () {
-     usersRef.doc(currentUser.uid).update({
-            "is_active": "Offline"
-     });
-    auth.signOut().then(function () {
-        loadPage("login.html")
-    }).catch(function (error) {
-        // An error happened.
-    });
-    
-});
 
 //loadPage("pages/login.html")
 /*
